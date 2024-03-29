@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./components/NavBar";
 import ContactList from "./components/ContactList";
 import ContactForm from "./components/ContactForm";
 import "./ContactApp.css";
@@ -7,11 +6,8 @@ import "./ContactApp.css";
 
 
 function ContactApp() {
-  // State variables
   const [contacts, setContacts] = useState([]);
-  const NavBarData = [
-    { id: 1, welcome: "", home: "HOME", aboutMe: "ABOUT ME", projects: "PROJECTS", gitHub: "GITHUB" },
-  ]
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState({});
 
@@ -54,11 +50,7 @@ function ContactApp() {
   return (
     <>
     <div className="container">
-    <div className = "sidebar">
-       <div className = "centered-sidebar">
-          <Navbar navbar={NavBarData} />
-       </div>
-    </div>
+   
        <div className="centered-contact">
           {/* ContactList component to display the list of contacts */}
           <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
