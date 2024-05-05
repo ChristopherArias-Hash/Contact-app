@@ -22,7 +22,7 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
     }; 
 
     // URL for the fetch request
-    const url = "http://127.0.0.1:5173/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
+    const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
 
     // Options for the fetch request
     const options = {

@@ -2,7 +2,7 @@
 from flask import request, jsonify
 from config import app, db
 from models import Contact
-from waitress import serve
+
 # Define endpoint to retrieve all contacts
 @app.route("/contacts", methods=["GET"])
 def get_contacts():
@@ -15,7 +15,7 @@ def get_contacts():
 
 # Define endpoint to create a new contact
 @app.route("/create_contact", methods=["POST"])
-def create_contact():
+def create_contract():
     # Get first_name, last_name, and email from request JSON
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
@@ -38,13 +38,50 @@ def create_contact():
     # Return a success message
     return jsonify({"message": "User Created!"}), 201
 
-# ... Define other endpoints (update, delete, etc.) ...
+# Define endpoint to update a contact
+@app.route("/update_contact/<int:user_id>", methods=["PATCH"])
+def update_contact(user_id):
+    # Find the contact with the given user_id
+    contact = Contact.query.get(user_id)
+    # Return a "User not found" message if the contact doesn't exist
+    if not contact:
+        return jsonify({"message": "User not found"}), 404
 
-# Run the Flask application using Waitress
+    # Get the new data from the request
+    data = request.json
+    # Update the contact's first_name, last_name, and email if a new value is provided
+    contact.first_name = data.get("firstName", contact.first_name)
+    contact.last_name = data.get("lastName", contact.last_name)
+    contact.email = data.get("email", contact.email)
+
+    # Save the changes to the database
+    db.session.commit()
+
+    # Return a success message
+    return jsonify({"message": "Contact updated"}), 200
+
+# Define endpoint to delete a contact
+@app.route("/delete_contact/<int:user_id>", methods=["DELETE"])
+def delete_contact(user_id):
+    # Find the contact with the given user_id
+    contact = Contact.query.get(user_id)
+    # Return a "User not found" message if the contact doesn't exist
+    if not contact:
+        return jsonify({"message": "User not found"}), 404
+
+    # Delete the contact from the database
+    db.session.delete(contact)
+    # Commit the changes
+    db.session.commit()
+
+    # Return a success message
+    return jsonify({"message": "User deleted!"}), 200
+
+# Run the Flask application
 if __name__ == "__main__":
     # Create the database tables
     with app.app_context():
         db.create_all()
 
-    # Use Waitress as the server
-    serve(app, host='0.0.0.0', port=5173)
+    # Run the application in debug mode
+    app.run(debug=True)
